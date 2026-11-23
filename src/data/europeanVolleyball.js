@@ -1,6 +1,27 @@
 export const EUROPEAN_VOLLEYBALL_TEAMS = [
-  { id: "nawaro-straubing", teamName: "NawaRo Straubing", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
-  { id: "vfl-oythe", teamName: "VfL Oythe", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  {
+    id: "nawaro-straubing",
+    teamName: "NawaRo Straubing",
+    league: "Sparda 2. Liga Pro",
+    country: "Germany",
+    players: [
+      { id: "ns-1", numar: "4", nume: "Jucătoare 1", post: "Ridicător" },
+      { id: "ns-2", numar: "7", nume: "Jucătoare 2", post: "Atacant" },
+      { id: "ns-3", numar: "11", nume: "Jucătoare 3", post: "Centru" },
+      { id: "ns-4", numar: "14", nume: "Jucătoare 4", post: "Opus" },
+      { id: "ns-5", numar: "2", nume: "Jucătoare 5", post: "Libero" },
+    ],
+  },
+  {
+    id: "vfl-oythe",
+    teamName: "VfL Oythe",
+    league: "Sparda 2. Liga Pro",
+    country: "Germany",
+    players: [
+      { id: "oy-1", numar: "5", nume: "Jucătoare Oythe 1", post: "Ridicător" },
+      { id: "oy-2", numar: "9", nume: "Jucătoare Oythe 2", post: "Atacant" },
+    ],
+  },
   { id: "tv-planegg-krailing", teamName: "TV Planegg-Krailing", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
   { id: "vco-dresden", teamName: "VCO Dresden", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
   { id: "dshs-snowtrex-koeln", teamName: "DSHS SnowTrex Köln", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
