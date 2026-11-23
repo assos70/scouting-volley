@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { EUROPEAN_VOLLEYBALL_TEAMS } from "./data/europeanVolleyball.js";
 import { calculateEfficiency } from "./utils/sheetParser.js";
 
-const STORAGE_KEY = "volei_scouting_loturi_v3";
+const STORAGE_KEY = "volei_scouting_loturi_v4";
 
 function normalizeazaJucatoare(j) {
   return {
@@ -13,6 +13,13 @@ function normalizeazaJucatoare(j) {
     atkReusit: Number(j.atkReusit) || 0,
     atkEroare: Number(j.atkEroare) || 0,
     atkTotal: Number(j.atkTotal) || 0,
+    srvAs: Number(j.srvAs) || 0,
+    srvEroare: Number(j.srvEroare) || 0,
+    srvTotal: Number(j.srvTotal) || 0,
+    recPozitiv: Number(j.recPozitiv) || 0,
+    recEroare: Number(j.recEroare) || 0,
+    recTotal: Number(j.recTotal) || 0,
+    blkPunct: Number(j.blkPunct) || 0,
   };
 }
 
@@ -64,18 +71,36 @@ export default function App() {
 
   const totalEchipa = jucatoareCurente.reduce(
     (acc, j) => {
-      acc.reusit += j.atkReusit;
-      acc.eroare += j.atkEroare;
-      acc.total += j.atkTotal;
+      acc.atkReusit += j.atkReusit;
+      acc.atkEroare += j.atkEroare;
+      acc.atkTotal += j.atkTotal;
+      acc.srvAs += j.srvAs;
+      acc.srvEroare += j.srvEroare;
+      acc.srvTotal += j.srvTotal;
+      acc.recPozitiv += j.recPozitiv;
+      acc.recEroare += j.recEroare;
+      acc.recTotal += j.recTotal;
+      acc.blkPunct += j.blkPunct;
       return acc;
     },
-    { reusit: 0, eroare: 0, total: 0 }
+    {
+      atkReusit: 0,
+      atkEroare: 0,
+      atkTotal: 0,
+      srvAs: 0,
+      srvEroare: 0,
+      srvTotal: 0,
+      recPozitiv: 0,
+      recEroare: 0,
+      recTotal: 0,
+      blkPunct: 0,
+    }
   );
 
-  const eficientaEchipa = calculateEfficiency(
-    totalEchipa.reusit,
-    totalEchipa.eroare,
-    totalEchipa.total
+  const eficientaAtacEchipa = calculateEfficiency(
+    totalEchipa.atkReusit,
+    totalEchipa.atkEroare,
+    totalEchipa.atkTotal
   );
 
   function adaugaJucatoare(e) {
@@ -109,7 +134,7 @@ export default function App() {
     }));
   }
 
-  function inregistreazaAtac(idJucatoare, tip) {
+  function inregistreazaActiune(idJucatoare, categorie, tip) {
     if (!echipaCurenta) return;
 
     setLoturi((prev) => ({
@@ -117,24 +142,41 @@ export default function App() {
       [echipaCurenta.id]: (prev[echipaCurenta.id] || []).map((j) => {
         if (j.id !== idJucatoare) return j;
 
-        if (tip === "reusit") {
-          return {
-            ...j,
-            atkReusit: j.atkReusit + 1,
-            atkTotal: j.atkTotal + 1,
-          };
+        if (categorie === "atk") {
+          if (tip === "reusit") {
+            return { ...j, atkReusit: j.atkReusit + 1, atkTotal: j.atkTotal + 1 };
+          }
+          if (tip === "eroare") {
+            return { ...j, atkEroare: j.atkEroare + 1, atkTotal: j.atkTotal + 1 };
+          }
+          return { ...j, atkTotal: j.atkTotal + 1 };
         }
-        if (tip === "eroare") {
-          return {
-            ...j,
-            atkEroare: j.atkEroare + 1,
-            atkTotal: j.atkTotal + 1,
-          };
+
+        if (categorie === "srv") {
+          if (tip === "as") {
+            return { ...j, srvAs: j.srvAs + 1, srvTotal: j.srvTotal + 1 };
+          }
+          if (tip === "eroare") {
+            return { ...j, srvEroare: j.srvEroare + 1, srvTotal: j.srvTotal + 1 };
+          }
+          return { ...j, srvTotal: j.srvTotal + 1 };
         }
-        return {
-          ...j,
-          atkTotal: j.atkTotal + 1,
-        };
+
+        if (categorie === "rec") {
+          if (tip === "pozitiv") {
+            return { ...j, recPozitiv: j.recPozitiv + 1, recTotal: j.recTotal + 1 };
+          }
+          if (tip === "eroare") {
+            return { ...j, recEroare: j.recEroare + 1, recTotal: j.recTotal + 1 };
+          }
+          return { ...j, recTotal: j.recTotal + 1 };
+        }
+
+        if (categorie === "blk") {
+          return { ...j, blkPunct: j.blkPunct + 1 };
+        }
+
+        return j;
       }),
     }));
   }
@@ -148,6 +190,13 @@ export default function App() {
         atkReusit: 0,
         atkEroare: 0,
         atkTotal: 0,
+        srvAs: 0,
+        srvEroare: 0,
+        srvTotal: 0,
+        recPozitiv: 0,
+        recEroare: 0,
+        recTotal: 0,
+        blkPunct: 0,
       })),
     }));
   }
@@ -168,7 +217,7 @@ export default function App() {
   }
 
   return (
-    <main style={{ fontFamily: "sans-serif", padding: "24px", maxWidth: "980px" }}>
+    <main style={{ fontFamily: "sans-serif", padding: "24px", maxWidth: "1040px" }}>
       <h1>Volei Scouting</h1>
       <p>
         Eficiență atac exemplu: <strong>{exempluEficienta}%</strong> · Echipe în ligă:{" "}
@@ -229,10 +278,13 @@ export default function App() {
           </div>
         </div>
 
-        <p style={{ marginTop: 0, marginBottom: "16px" }}>
-          Total atac echipă: <strong>{totalEchipa.reusit}</strong> reușite /{" "}
-          <strong>{totalEchipa.eroare}</strong> erori / <strong>{totalEchipa.total}</strong>{" "}
-          total · Eficiență echipă: <strong>{eficientaEchipa}%</strong>
+        <p style={{ marginTop: 0, marginBottom: "16px", lineHeight: "1.6" }}>
+          <strong>Atac:</strong> +{totalEchipa.atkReusit} / {totalEchipa.atkEroare} er. /{" "}
+          {totalEchipa.atkTotal} tot. (<strong>{eficientaAtacEchipa}%</strong>) ·{" "}
+          <strong>Serviciu:</strong> {totalEchipa.srvAs} ași / {totalEchipa.srvEroare} er. /{" "}
+          {totalEchipa.srvTotal} tot. · <strong>Preluare:</strong> {totalEchipa.recPozitiv}{" "}
+          poz. / {totalEchipa.recEroare} er. / {totalEchipa.recTotal} tot. ·{" "}
+          <strong>Blocaj:</strong> {totalEchipa.blkPunct} pct.
         </p>
 
         <form
@@ -277,7 +329,7 @@ export default function App() {
         ) : (
           <div style={{ display: "grid", gap: "10px" }}>
             {jucatoareCurente.map((j) => {
-              const eficientaJucatoare = calculateEfficiency(
+              const eficientaAtac = calculateEfficiency(
                 j.atkReusit,
                 j.atkEroare,
                 j.atkTotal
@@ -290,50 +342,117 @@ export default function App() {
                     border: "1px solid #e5e5e5",
                     borderRadius: "6px",
                     padding: "10px 12px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    gap: "10px",
                   }}
                 >
-                  <div>
-                    <strong>#{j.numar}</strong> {j.nume} — <em>{j.post}</em>
-                    <div style={{ fontSize: "14px", marginTop: "4px" }}>
-                      Atac: <strong>+{j.atkReusit}</strong> · Eroare:{" "}
-                      <strong>{j.atkEroare}</strong> · Total: <strong>{j.atkTotal}</strong> ·
-                      Eficiență: <strong>{eficientaJucatoare}%</strong>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      gap: "8px",
+                    }}
+                  >
+                    <div>
+                      <strong>#{j.numar}</strong> {j.nume} — <em>{j.post}</em>
                     </div>
-                  </div>
-
-                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      onClick={() => inregistreazaAtac(j.id, "reusit")}
-                      style={{ padding: "6px 10px", cursor: "pointer" }}
-                    >
-                      + Atac reușit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => inregistreazaAtac(j.id, "eroare")}
-                      style={{ padding: "6px 10px", cursor: "pointer" }}
-                    >
-                      E Atac greșit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => inregistreazaAtac(j.id, "neutru")}
-                      style={{ padding: "6px 10px", cursor: "pointer" }}
-                    >
-                      0 Atac neutru
-                    </button>
                     <button
                       type="button"
                       onClick={() => stergeJucatoare(j.id)}
-                      style={{ padding: "6px 10px", cursor: "pointer" }}
+                      style={{ padding: "4px 8px", cursor: "pointer" }}
                     >
                       Șterge
+                    </button>
+                  </div>
+
+                  <div style={{ fontSize: "14px", marginTop: "6px", lineHeight: "1.5" }}>
+                    <strong>Atac:</strong> +{j.atkReusit} / {j.atkEroare} er. / {j.atkTotal}{" "}
+                    tot. (<strong>{eficientaAtac}%</strong>) · <strong>Serviciu:</strong>{" "}
+                    {j.srvAs} ași / {j.srvEroare} er. / {j.srvTotal} tot. ·{" "}
+                    <strong>Preluare:</strong> {j.recPozitiv} poz. / {j.recEroare} er. /{" "}
+                    {j.recTotal} tot. · <strong>Blocaj:</strong> {j.blkPunct} pct.
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "6px",
+                      flexWrap: "wrap",
+                      marginTop: "8px",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => inregistreazaActiune(j.id, "atk", "reusit")}
+                      style={{ padding: "5px 9px", cursor: "pointer" }}
+                    >
+                      Atac +
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => inregistreazaActiune(j.id, "atk", "eroare")}
+                      style={{ padding: "5px 9px", cursor: "pointer" }}
+                    >
+                      Atac E
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => inregistreazaActiune(j.id, "atk", "neutru")}
+                      style={{ padding: "5px 9px", cursor: "pointer" }}
+                    >
+                      Atac 0
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => inregistreazaActiune(j.id, "srv", "as")}
+                      style={{ padding: "5px 9px", cursor: "pointer" }}
+                    >
+                      Serviciu As
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => inregistreazaActiune(j.id, "srv", "eroare")}
+                      style={{ padding: "5px 9px", cursor: "pointer" }}
+                    >
+                      Serviciu E
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => inregistreazaActiune(j.id, "srv", "neutru")}
+                      style={{ padding: "5px 9px", cursor: "pointer" }}
+                    >
+                      Serviciu 0
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => inregistreazaActiune(j.id, "rec", "pozitiv")}
+                      style={{ padding: "5px 9px", cursor: "pointer" }}
+                    >
+                      Preluare +
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => inregistreazaActiune(j.id, "rec", "eroare")}
+                      style={{ padding: "5px 9px", cursor: "pointer" }}
+                    >
+                      Preluare E
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => inregistreazaActiune(j.id, "rec", "neutru")}
+                      style={{ padding: "5px 9px", cursor: "pointer" }}
+                    >
+                      Preluare 0
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => inregistreazaActiune(j.id, "blk", "punct")}
+                      style={{ padding: "5px 9px", cursor: "pointer" }}
+                    >
+                      Blocaj +
                     </button>
                   </div>
                 </div>
