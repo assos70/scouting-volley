@@ -1,24 +1,15 @@
 export const EUROPEAN_VOLLEYBALL_TEAMS = [
-  {
-    id: "sparda-2-liga-pro-1",
-    teamName: "Echipa 1 Sparda 2. Liga Pro",
-    league: "Sparda 2. Liga Pro",
-    country: "Germany",
-    players: [
-      { number: 1, name: "Jucătoare 1", position: "OH" },
-      { number: 4, name: "Jucătoare 4", position: "MB" },
-      { number: 8, name: "Jucătoare 8", position: "S" },
-    ],
-  },
-  {
-    id: "sparda-2-liga-pro-2",
-    teamName: "Echipa 2 Sparda 2. Liga Pro",
-    league: "Sparda 2. Liga Pro",
-    country: "Germany",
-    players: [
-      { number: 2, name: "Jucătoare 2", position: "OPP" },
-      { number: 6, name: "Jucătoare 6", position: "L" },
-      { number: 10, name: "Jucătoare 10", position: "OH" },
-    ],
-  },
+  { id: "nawaro-straubing", teamName: "NawaRo Straubing", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "vfl-oythe", teamName: "VfL Oythe", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "tv-planegg-krailing", teamName: "TV Planegg-Krailing", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "vco-dresden", teamName: "VCO Dresden", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "dshs-snowtrex-koeln", teamName: "DSHS SnowTrex Köln", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "bayervolleys-leverkusen", teamName: "BayerVolleys Leverkusen", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "tv-waldgirmes", teamName: "TV Waldgirmes", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "esa-grimma-volleys", teamName: "ESA Grimma Volleys", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "sparkassen-wildcats-stralsund", teamName: "Sparkassen Wildcats Stralsund", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "eintracht-spontent-duesseldorf", teamName: "Eintracht Spontent Düsseldorf", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "neuseenland-volleys-markkleeberg", teamName: "Neuseenland-Volleys Markkleeberg", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "sc-union-emlichheim", teamName: "SC Union Emlichheim", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
+  { id: "sv-lohhof", teamName: "SV Lohhof", league: "Sparda 2. Liga Pro", country: "Germany", players: [] },
 ];
